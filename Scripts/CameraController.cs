@@ -39,7 +39,7 @@ public class CameraController : MonoBehaviour
     {
         cam = Camera.main;
         curZoom = cam.transform.localPosition.y;
-        curXRot = -50;
+        curXRot = -15;
 
         moveEdgeBorder = 10; // Width of the border at screen edge in pixels
         moveRightDirection = transform.right;
