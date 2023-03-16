@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public static PlayerController instance;
     public float moveSpeed = 5f;
     public float followSpeed = 2f;
     public GameObject player;
@@ -13,6 +14,11 @@ public class PlayerController : MonoBehaviour
     private bool _isWalking;
     private bool _runMode;
     public Rigidbody rb;
+
+    void Awake()
+    {
+        instance = this;
+    }
 
     void Start()
     {

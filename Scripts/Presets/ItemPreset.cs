@@ -14,12 +14,28 @@ using UnityEditor;
 *
 */
 
+public enum ItemType
+{
+    Resource, // Resource nodes (Trees, Iron Deposit, Copper Deposit, etc.)
+    Material, // Resources mined from nodes/Refined materials/Components (Copper Ore/Copper Ingot/Copper Wire)
+    Machine
+}
+
 [CreateAssetMenu(fileName = "Item Preset", menuName = "New Item Type")]
 public class ItemPreset : ScriptableObject
 {
+    [Header("Info")]
     public string displayName;
     public string description;
     public GameObject prefab;
+    public ItemType type;
+    public Sprite icon;
+    public float interactionRange = 4;
+
+    [Header("Stacking")]
+    public bool canStack;
+    public int maxStackAmount;
+
 
     // Don't need this. Create new types for each instead:
     // public enum type {
