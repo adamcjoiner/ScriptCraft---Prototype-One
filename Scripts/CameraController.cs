@@ -5,20 +5,28 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     // Code source: https://gamedevacademy.org/unity-city-building-game-tutorial/
+    public bool orthographic;
     public float moveSpeed;
 
-    public float minXRot;
-    public float maxXRot;
+    public float minXRot = -85;
+    public float maxXRot = -2;
+    public float minCamXRot = 75;
+    public float maxCamXRot = 90;
+
+
+    public float minZoom = 9;
+    public float maxZoom = 50;
+    public float minOrthoSize = 4;
+    public float maxOrthoSize = 20;
+
+    public float zoomSpeed = 20;
+    public float rotateSpeed = 3;
 
     private float curXRot;
+    private float curCamXRot = 90;
+    private float curZoom = 30;
+    private float curOrthoSize = 14;
 
-    public float minZoom;
-    public float maxZoom;
-
-    public float zoomSpeed;
-    public float rotateSpeed;
-
-    private float curZoom;
     private Camera cam;
 
     private float moveEdgeBorder; // Pixels. The width border at the edge in which the movement work
@@ -30,16 +38,44 @@ public class CameraController : MonoBehaviour
     private Vector3 targetForward;
     private Vector3 targetRight;
     
-    public float turnSpeed;
+    public float turnSpeed = 3;
     public float smoothTime = 0.1f;
     private Vector3 smoothVelocity = Vector3.zero;
+
+    private void setOrthographic() {
+        cam.orthographic = true;
+        cam.orthographicSize = curOrthoSize;
+        minXRot = -50;
+        minCamXRot = 87.2f;
+        maxCamXRot = 90;
+        cam.transform.localEulerAngles = new Vector3(minCamXRot, 0.0f, 0.0f);
+        cam.transform.localPosition = Vector3.up * 30; // reset perspective zoom
+        cam.orthographicSize = curOrthoSize; // set orthographic zoom
+    }
+
+    private void setPerspective() {
+        cam.orthographic = false;
+        minXRot = -85;
+        minCamXRot = 75;
+        maxCamXRot = 90;
+        cam.transform.localPosition = Vector3.up * curZoom; // set perspective zoom
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         cam = Camera.main;
-        curZoom = cam.transform.localPosition.y;
-        curXRot = -15;
+
+        // Set Camera to initial view parameters
+            if (orthographic) {
+                setOrthographic();
+                curXRot = -25;
+            } else {
+                setPerspective();
+                curXRot = -5;
+            }
+
+            transform.eulerAngles = new Vector3(curXRot, 0.0f, 0.0f);
 
         moveEdgeBorder = 10; // Width of the border at screen edge in pixels
         moveRightDirection = transform.right;
@@ -49,13 +85,27 @@ public class CameraController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         // Camera zoom (scroll wheel)
-        curZoom += Input.GetAxis("Mouse ScrollWheel") * -zoomSpeed;
-        curZoom = Mathf.Clamp(curZoom, minZoom, maxZoom);
+        
+            // if orthographic
+            if (orthographic) {
+                setOrthographic();
+                curOrthoSize += Input.GetAxis("Mouse ScrollWheel") * -zoomSpeed;
+                curOrthoSize = Mathf.Clamp(curOrthoSize, minOrthoSize, maxOrthoSize);
 
-        cam.transform.localPosition = Vector3.up * curZoom;
+                cam.orthographicSize = curOrthoSize;
+
+            // if perspective
+            } else {
+                setPerspective();
+                curZoom += Input.GetAxis("Mouse ScrollWheel") * -zoomSpeed;
+                curZoom = Mathf.Clamp(curZoom, minZoom, maxZoom);
+
+                cam.transform.localPosition = Vector3.up * curZoom;
+            }
+        
 
         // Camera rotation (right mouse button)
         if(Input.GetMouseButton(1)) {
@@ -66,39 +116,16 @@ public class CameraController : MonoBehaviour
             curXRot = Mathf.Clamp(curXRot, minXRot, maxXRot);
 
             transform.eulerAngles = new Vector3(curXRot, transform.eulerAngles.y + (x * rotateSpeed), 0.0f);
+
+            // Calculate X rotation for Main Camera based on current zoom level
+            float zoomPercent = Mathf.InverseLerp(maxZoom, minZoom, curZoom);
+            float mainCameraX = Mathf.Lerp(minCamXRot, maxCamXRot, Mathf.InverseLerp(minXRot, maxXRot, curXRot * zoomPercent));
+            cam.transform.localEulerAngles = new Vector3(mainCameraX, 0.0f, 0.0f);
+        } else {
+            // Calculate X rotation for Main Camera based on current zoom level and Camera Pivot X rotation
+            float zoomPercent = Mathf.InverseLerp(maxZoom, minZoom, curZoom);
+            float mainCameraX = Mathf.Lerp(minCamXRot, maxCamXRot, Mathf.InverseLerp(minXRot, maxXRot, curXRot * zoomPercent));
+            cam.transform.localEulerAngles = new Vector3(mainCameraX, 0.0f, 0.0f);
         }
-
-        float moveXMouse = 0;
-        float moveZMouse = 0;
-
-    void LateUpdate()
-    {
-        // Get player's forward and right vectors, ignoring y-axis
-        Vector3 playerForward = playerTransform.forward;
-        playerForward.y = 0.0f;
-        playerForward.Normalize();
-        Vector3 playerRight = playerTransform.right;
-        playerRight.y = 0.0f;
-        playerRight.Normalize();
-
-        // Smoothly interpolate camera's forward and right vectors to match player's
-        Vector3 targetForward = playerForward;
-        Vector3 targetRight = playerRight;
-        transform.forward = Vector3.SmoothDamp(transform.forward, targetForward, ref smoothVelocity, smoothTime);
-        transform.right = Vector3.SmoothDamp(transform.right, targetRight, ref smoothVelocity, smoothTime);
-
-        // Move camera along the player's forward and right vectors
-        float moveXKeyboard = Input.GetAxisRaw("Horizontal");
-        float moveZKeyboard = Input.GetAxisRaw("Vertical");
-        Vector3 moveDir = playerForward * moveZKeyboard + playerRight * moveXKeyboard;
-        transform.position += moveDir.normalized * moveSpeed * Time.deltaTime;
-
-        // Rotate camera around player
-        // if (Input.GetMouseButton(1))
-        // {
-        //     float mouseX = Input.GetAxis("Mouse X") * turnSpeed * Time.deltaTime;
-        //     transform.RotateAround(playerTransform.position, Vector3.up, mouseX);
-        // }
-    }
     }
 }
