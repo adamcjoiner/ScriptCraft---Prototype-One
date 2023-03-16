@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a1a95044b20bb04ca7652f9c3b23ed0, type: 3}
+  m_Name: Tree
+  m_EditorClassIdentifier: 
+  displayName: Tree
+  description: A resource that provides wood planks and foliage.
+  prefab: {fileID: 5367679319603306213, guid: ad58b4bd71a7a664a99ffc06c59fcd35, type: 3}
+  type: 0
+  icon: {fileID: 0}
+  canStack: 0
+  maxStackAmount: 0
+  quantity: 0

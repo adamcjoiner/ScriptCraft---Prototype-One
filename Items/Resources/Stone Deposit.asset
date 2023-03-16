@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a1a95044b20bb04ca7652f9c3b23ed0, type: 3}
+  m_Name: Stone Deposit
+  m_EditorClassIdentifier: 
+  displayName: Stone
+  description: A resource that provides gravel.
+  prefab: {fileID: 4615271172644461936, guid: 282b510cdd2e8a74f9191a15dd74f48c, type: 3}
+  type: 0
+  icon: {fileID: 0}
+  canStack: 0
+  maxStackAmount: 0
+  quantity: 0
