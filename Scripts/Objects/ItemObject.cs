@@ -5,6 +5,7 @@ using UnityEngine;
 public class ItemObject : MonoBehaviour//, IInteractable
 {
     public ItemPreset item;
+    public GameObject cursor;
 
     public string GetInteractPrompt()
     {
@@ -18,6 +19,8 @@ public class ItemObject : MonoBehaviour//, IInteractable
 
     private void OnMouseEnter() {
         // Do hover interactions
+            cursor.SetActive(true);
+
             // Display the appropriate message in the console based on the item type
             string message = "";
             switch (item.type) {
@@ -32,6 +35,10 @@ public class ItemObject : MonoBehaviour//, IInteractable
                     break;
             }
             Debug.Log(message);
+    }
+
+    private void OnMouseExit() {
+            cursor.SetActive(false);
     }
 
     void Update()

@@ -1,0 +1,7 @@
+newmtl Bauxite_Ore
+map_Kd Rock_1_4K_Albedo.png
+bump Rock_2_4K_Normal.png
+disp Rock_2_4K_Displacement.exr
+Kd 1 0.5580105 0.3716981
+d 1
+

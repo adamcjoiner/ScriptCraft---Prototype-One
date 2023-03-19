@@ -20,4 +20,4 @@ MonoBehaviour:
   interactionRange: 4
   canStack: 0
   maxStackAmount: 0
-  quantity: 0
+  quantity: 200
